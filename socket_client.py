@@ -19,14 +19,14 @@ async def download_file():
         await websocket.send(name)
         print(f"Client >>> {name}")
 
-        with open("meme_down.jpg", "wb") as file:
+        with open("video.mpkv", "wb") as file:
             while True:
                 try:
                     # Receive chunked data from the server
                     packed_chunk = await websocket.recv()
                     
                     # If no data is received, the transfer is complete
-                    if not packed_chunk:
+                    if packed_chunk == "finished":
                         break
                     
                     # Unpack the chunk using msgpack
@@ -38,7 +38,6 @@ async def download_file():
                 except Exception as e:
                     print(f"An error occurred: {e}")
                     break
-
 
 if __name__ == "__main__":
     asyncio.run(download_file())
