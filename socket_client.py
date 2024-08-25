@@ -3,9 +3,15 @@
 import asyncio
 
 from websockets.asyncio.client import connect
+from dotenv import load_dotenv, find_dotenv
+import os
+
+load_dotenv(find_dotenv())
 
 async def hello():
-    uri = "ws://localhost:8030"
+    host = os.getenv("HOST")
+    port = os.getenv("PORT")
+    uri = f"ws://{host}:{port}"
     async with connect(uri) as websocket:
         name = input("What's your name? ")
 
