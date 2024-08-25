@@ -3,16 +3,22 @@
 import asyncio
 import os
 from websockets.asyncio.server import serve
+import msgpack
 
-async def send_file(websocket, path):
-    if os.path.exists(path):
-        with open(path, 'rb') as file:
-            data = file.read()
-            await websocket.send(data)
-            print(f"Server sent the file: {path}")
-    else:
-        await websocket.send("File not found")
+def read_chunked_binary(file_path, chunk_size=1024):
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            while True:
+                chunk = file.read(chunk_size)
+                if not chunk:
+                    break
+                yield chunk
 
+async def send_file(websocket, path, chunk_size=1024):
+        for chunk in read_chunked_binary(path, chunk_size):
+            packed_chunk = msgpack.packb(chunk)
+            await websocket.send(packed_chunk)
+    
 async def hello(websocket):
     name = await websocket.recv()
     print(f"<<< {name}")
