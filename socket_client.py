@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import asyncio
-
 from websockets.asyncio.client import connect
 from dotenv import load_dotenv, find_dotenv
 import os
@@ -18,8 +17,12 @@ async def hello():
         await websocket.send(name)
         print(f"Client >>> {name}")
 
-        greeting = await websocket.recv()
-        print(f"<<< {greeting}")
+        file_data = await websocket.recv()
+        print("File received from the server")
+
+        with open("meme_down.jpg", "wb") as file:
+            file.write(file_data)
+            print("File saved as 'meme_down.jpg'")
 
 if __name__ == "__main__":
-    asyncio.run(hello())
+    asyncio.run(download_file())
