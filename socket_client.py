@@ -7,7 +7,7 @@ import os
 
 load_dotenv(find_dotenv())
 
-async def hello():
+async def download_file():
     host = os.getenv("HOST")
     port = os.getenv("PORT")
     uri = f"ws://{host}:{port}"
@@ -20,9 +20,11 @@ async def hello():
         file_data = await websocket.recv()
         print("File received from the server")
 
+        # Save the file to disk
         with open("meme_down.jpg", "wb") as file:
             file.write(file_data)
             print("File saved as 'meme_down.jpg'")
+
 
 if __name__ == "__main__":
     asyncio.run(download_file())
